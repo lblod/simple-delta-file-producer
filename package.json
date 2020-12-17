@@ -1,0 +1,22 @@
+{
+  "name": "simple-delta-file-producer",
+  "version": "0.0.1",
+  "description": "Microservice to produce delta files containing data",
+  "dependencies": {
+    "@lblod/mu-auth-sudo": "^0.2.0",
+    "fs-extra": "^8.0.1",
+    "lodash.flatten": "^4.4.0",
+    "lodash.uniq": "^4.5.0",
+    "moment": "^2.29.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lblod/simple-delta-file-producer.git"
+  },
+  "author": "redpencil.io",
+  "license": "MIT"
+}
