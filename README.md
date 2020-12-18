@@ -117,4 +117,12 @@ The generated diff files are written to the store according to the [model of the
 | publisher | `dct:publisher` | `rdfs:Resource` | Publisher of the file, in this case always `<http://data.lblod.info/services/leidinggevendendatabank-functionarissen-producer>` |
 
 ## Known limitations
+* We can provide types to ignore when processing the delta files.  It has a big limitation in cases
+of deltas with deleting information. If we have a resource that we delete, let's say
+`?s a Type ; ?p ?o .`, we are going to receive two separate delta, with no particular order, so it
+might be first the `?s a Type` triple. But when we'll then receive `?s ?p ?o` and check the store
+what's his type, the type will already be deleted so we the service is going to think it's not an
+ignored type and write it down to a file.
+The current implementation of the core services (delta notifier, database) doesn't allow us to get
+the full transaction which prevents us from ensuring a 100% bulletproof blacklist.
 * The service keeps an in-memory cache of delta's to write to a file. If the service is killed before the delta's have been written to a file, the delta's are lost. Hence, shortening the `DELTA_INTERVAL`, decreases the chance to loose data on restart.
