@@ -27,6 +27,7 @@ app.post('/delta', async function(req, res) {
     console.log(`Receiving delta ${JSON.stringify(file.delta)}`);
 
   await enrichDeltaFile(file);
+
   if(!file.isEmpty) {
     if (LOG_OUTGOING_DELTA) {
       console.log(`Outgoing delta ${JSON.stringify(file.delta)}`);
