@@ -1,6 +1,6 @@
 {
   "name": "simple-delta-file-producer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Microservice to produce delta files containing data",
   "dependencies": {
     "@lblod/mu-auth-sudo": "^0.2.0",
