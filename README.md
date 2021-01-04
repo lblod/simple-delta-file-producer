@@ -1,6 +1,6 @@
 # simple-delta-file-producer
 
-This simple service listens to all the deltas of a stack and genertates diff files to sync data to
+This simple service listens to all the deltas of a stack and generates diff files to sync data to
 external applications.
 Diff files are generated since a specific timestamp and can be fetched by a consuming service.
 
