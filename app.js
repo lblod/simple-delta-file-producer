@@ -11,12 +11,12 @@ app.use(bodyParser.json({
   limit: '500mb',
   type: function(req) {
     return /^application\/json/.test(req.get('content-type'));
-  },
+  }
 }));
 
 // --- REST API ---
 
-app.get('/', function(req, res) {
+app.get('/', function(_, res) {
   const hello = `Hey, you have reached "${APP_NAME}"! Seems like I'm doing just fine! ^_^`;
   res.send(hello);
 });
@@ -34,7 +34,7 @@ app.post('/delta', async function(req, res) {
     }
     await file.writeToDisk();
   } else {
-    console.log("Delta did not contain any triples of interest, nothing saved to disk.")
+    console.log("Delta did not contain any triples of interest, nothing saved to disk.");
   }
 
   res.status(202).send();
