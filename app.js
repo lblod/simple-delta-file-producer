@@ -3,8 +3,10 @@ import bodyParser from 'body-parser';
 import DeltaFile from './lib/delta-file.js';
 import { APP_NAME, LOG_INCOMING_DELTA, LOG_OUTGOING_DELTA } from './lib/config';
 import { enrichDeltaFile } from './lib/producer';
+import { ProcessingQueue } from './lib/processing-queue';
 
 // --- CONFIGURATION ---
+const queue = new ProcessingQueue();
 
 // delta notifier can receive and send-out payloads to a size up to 500mb
 app.use(bodyParser.json({
@@ -15,30 +17,36 @@ app.use(bodyParser.json({
 }));
 
 // --- REST API ---
-
 app.get('/', function(_, res) {
   const hello = `Hey, you have reached "${APP_NAME}"! Seems like I'm doing just fine! ^_^`;
   res.send(hello);
 });
 
 app.post('/delta', async function(req, res) {
-  const file = new DeltaFile(req);
-  if (LOG_INCOMING_DELTA)
-    console.log(`Receiving delta ${JSON.stringify(file.delta)}`);
-
-  await enrichDeltaFile(file);
-
-  if(!file.isEmpty) {
-    if (LOG_OUTGOING_DELTA) {
-      console.log(`Outgoing delta ${JSON.stringify(file.delta)}`);
-    }
-    await file.writeToDisk();
-  } else {
-    console.log("Delta did not contain any triples of interest, nothing saved to disk.");
-  }
-
+  const job = createJob(req);
+  queue.addJob(job);
   res.status(202).send();
 });
+
+function createJob(req){
+  return async () => {
+    const file = new DeltaFile(req);
+    if (LOG_INCOMING_DELTA)
+      console.log(`Receiving delta ${JSON.stringify(file.delta)}`);
+
+    await enrichDeltaFile(file);
+
+    if(!file.isEmpty) {
+      if (LOG_OUTGOING_DELTA) {
+        console.log(`Outgoing delta ${JSON.stringify(file.delta)}`);
+      }
+      await file.writeToDisk();
+    } else {
+      console.log("Delta did not contain any triples of interest, nothing saved to disk.");
+    }
+  };
+}
+
 
 app.get('/files', async function(req, res) {
   const since = req.query.since || new Date().toISOString();
